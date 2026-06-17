@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sorteador Sopro - Sem Scroll</title>
+    <title>Sorteador Sopro - Participantes</title>
     <style>
         :root {
             --verde: #00EA6A;
@@ -21,7 +21,6 @@
             font-family: 'Segoe UI', system-ui, sans-serif;
         }
 
-        /* Trava o scroll na página inteira */
         body {
             background-color: var(--cinza-fundo);
             color: var(--preto);
@@ -34,7 +33,7 @@
             padding: 10px;
         }
 
-        /* CONTAINER QUADRADO DINÂMICO AMARRADO À ALTURA DA TELA */
+        /* CONTAINER QUADRADO DINÂMICO SEM SCROLL */
         .container-sorteio {
             background: white;
             width: 95vh;
@@ -192,7 +191,7 @@
         
         .grid-rifa {
             display: grid;
-            grid-template-columns: repeat(8, 1fr); 
+            grid-template-columns: repeat(9, 1fr); 
             gap: 10px;
             padding: 20px 30px;
             background: white;
@@ -215,7 +214,6 @@
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             user-select: none;
             width: 100%;
-            max-height: 100%;
         }
 
         .item-num.vencedor-grid {
@@ -227,7 +225,6 @@
             z-index: 10;
         }
 
-        
         @media (max-height: 600px) {
             .grid-rifa { gap: 6px; padding: 10px; }
             .item-num { font-size: 0.9rem; }
@@ -268,23 +265,24 @@
         const displayNumero = document.getElementById('displayNumero');
         const btnSortear = document.getElementById('btnSortear');
 
-        const numerosDisponiveis = [
-            1, 8, 9, 
-            12, 13, 16, 17, 18, 
-            24, 26, 28, 30, 
-            31, 32, 38, 39, 
-            41, 48, 49, 
-            51, 52, 57, 58, 59, 60, 
-            62, 63, 69, 
-            71, 72, 74, 75, 76, 78, 
-            82, 83, 85, 87, 88, 89, 90, 
-            92, 93, 94, 96, 97
+        
+        const numerosComprados = [
+            2, 3, 4, 5, 6, 7, 10,
+            11, 14, 15, 19, 20,
+            21, 22, 23, 25, 27, 29,
+            33, 34, 35, 36, 37, 40,
+            42, 43, 44, 45, 46, 47, 50,
+            53, 54, 55, 56,
+            61, 64, 65, 66, 67, 68, 70,
+            73, 77, 79, 80,
+            81, 84, 86,
+            91, 95, 98, 99, 100
         ];
 
         function gerarGradeExclusiva() {
             const fragment = document.createDocumentFragment();
             
-            numerosDisponiveis.forEach(numero => {
+            numerosComprados.forEach(numero => {
                 const numCard = document.createElement('div');
                 numCard.className = 'item-num';
                 numCard.id = `n-${numero}`;
@@ -296,7 +294,7 @@
         }
 
         function iniciarSorteio() {
-            if (numerosDisponiveis.length === 0) return;
+            if (numerosComprados.length === 0) return;
 
             btnSortear.disabled = true;
             document.querySelectorAll('.item-num').forEach(el => el.classList.remove('vencedor-grid'));
@@ -307,8 +305,8 @@
             let velocidade = 50;
 
             function rodarRoleta() {
-                const indexAleatorio = Math.floor(Math.random() * numerosDisponiveis.length);
-                displayNumero.textContent = numerosDisponiveis[indexAleatorio];
+                const indexAleatorio = Math.floor(Math.random() * numerosComprados.length);
+                displayNumero.textContent = numerosComprados[indexAleatorio];
                 alternancias++;
 
                 if (alternancias < maxAlternancias) {
@@ -322,8 +320,8 @@
             function baterMartelo() {
                 displayNumero.className = 'numero-sorteado vencedor';
                 
-                const indexVencedor = Math.floor(Math.random() * numerosDisponiveis.length);
-                const numeroVencedor = numerosDisponiveis[indexVencedor];
+                const indexVencedor = Math.floor(Math.random() * numerosComprados.length);
+                const numeroVencedor = numerosComprados[indexVencedor];
                 
                 displayNumero.textContent = numeroVencedor;
 
