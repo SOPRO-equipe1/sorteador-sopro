@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorteador Sopro</title>
+    <style>
+        :root {
+            --verde: #00EA6A;
+            --azul: #0FB3FF;
+            --laranja: #F97316;
+            --branco: #FAFCFF;
+            --preto: #1D252A;
+            --cinza-fundo: #f8fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background-color: var(--cinza-fundo);
+            color: var(--preto);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+       
+        .container-sorteio {
+            background: white;
+            width: 100%;
+            max-width: 1200px; 
+            border-radius: 24px;
+            box-shadow: 0 15px 40px rgba(29, 37, 42, 0.08);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        
+        .header-logo {
+            background: white;
+            padding: 30px 20px 10px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .logo-container img {
+            max-width: 160px;
+            height: auto;
+            object-fit: contain;
+        }
+
+  
+        .wave-divisor {
+            width: 100%;
+            height: 70px;
+            line-height: 0;
+            background: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wave-divisor svg {
+            position: absolute;
+            width: 200%; 
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        
+        .wave-back {
+            fill: var(--azul);
+            opacity: 0.75;
+            animation: mover-onda-esquerda 12s linear infinite;
+        }
+
+        .wave-front {
+            fill: var(--verde);
+            animation: mover-onda-direita 8s linear infinite; 
+        }
+
+        
+        @keyframes mover-onda-esquerda {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%); 
+            }
+        }
+
+       
+        @keyframes mover-onda-direita {
+            0% {
+                transform: translateX(-50%);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+        
+        .painel-central {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            padding: 20px 40px;
+            background: var(--branco);
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .visor-resultado {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .visor-resultado span {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            color: #718096;
+        }
+
+        .numero-sorteado {
+            width: 75px;
+            height: 75px;
+            border: 3px solid var(--azul);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: white;
+            transition: all 0.2s ease;
+        }
+
+        
+        .numero-sorteado.girando {
+            color: var(--laranja);
+            border-color: var(--laranja);
+            animation: girando-efeito 0.1s infinite alternate;
+        }
+
+        .numero-sorteado.vencedor {
+            color: white;
+            background-color: var(--verde);
+            border-color: var(--verde);
+            animation: bounce-efeito 0.4s ease-out forwards;
+        }
+
+        @keyframes girando-efeito {
+            from { transform: scale(0.95); }
+            to { transform: scale(1.05); }
+        }
+
+        @keyframes bounce-efeito {
+            0% { transform: scale(0.6); }
+            100% { transform: scale(1); }
+        }
+
+        .btn-sortear {
+            background: var(--laranja);
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-sortear:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4);
+        }
+
+        .btn-sortear:disabled {
+            background: #cbd5e1;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+     
+        .grid-rifa {
+            display: grid;
+            grid-template-columns: repeat(20, 1fr); 
+            gap: 12px;
+            padding: 30px 40px;
+            background: white;
+        }
+
+        .item-num {
+            aspect-ratio: 1;
+            background: white;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #4a5568;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .item-num.vencedor-grid {
+            background-color: var(--verde);
+            color: white;
+            border-color: var(--verde);
+            transform: scale(1.18);
+            box-shadow: 0 0 15px rgba(0, 234, 106, 0.5);
+        }
+
+        
+        @media (max-width: 1024px) {
+            .grid-rifa { grid-template-columns: repeat(10, 1fr); }
+            .painel-central { flex-direction: column; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="container-sorteio">
+        <header class="header-logo">
+            <div class="logo-container">
+                <img src="logo.png" alt="Logo Sopro" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 150 40\'><text x=\'10\' y=\'30\' fill=\'%231D252A\' font-family=\'sans-serif\' font-weight=\'bold\' font-size=\'28\'>Sopr<tspan fill=\'%2300EA6A\'>o</tspan></text></svg>'">
+            </div>
+        </header>
+
+        <div class="wave-divisor">
+            <svg viewBox="0 0 1200 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <path class="wave-layer wave-back" d="M 0 60 Q 300 120 600 60 T 1200 60 L 1200 0 L 0 0 Z"></path>
+                <path class="wave-layer wave-front" d="M 0 40 Q 300 100 600 40 T 1200 40 L 1200 0 L 0 0 Z"></path>
+            </svg>
+        </div>
+
+        <section class="painel-central">
+            <div class="visor-resultado">
+                <span>Resultado:</span>
+                <div id="displayNumero" class="numero-sorteado">--</div>
+            </div>
+            <button id="btnSortear" class="btn-sortear">Sortear Número</button>
+        </section>
+
+        <section class="grid-rifa" id="gridRifa"></section>
+    </main>
+
+    <script>
+        const gridRifa = document.getElementById('gridRifa');
+        const displayNumero = document.getElementById('displayNumero');
+        const btnSortear = document.getElementById('btnSortear');
+        const TOTAL_NUMEROS = 100;
+
+        function gerarGrade() {
+            const fragment = document.createDocumentFragment();
+            for (let i = 1; i <= TOTAL_NUMEROS; i++) {
+                const numCard = document.createElement('div');
+                numCard.className = 'item-num';
+                numCard.id = `n-${i}`;
+                numCard.textContent = i;
+                fragment.appendChild(numCard);
+            }
+            gridRifa.appendChild(fragment);
+        }
+
+        function iniciarSorteio() {
+            btnSortear.disabled = true;
+            document.querySelectorAll('.item-num').forEach(el => el.classList.remove('vencedor-grid'));
+            displayNumero.className = 'numero-sorteado girando';
+
+            let alternancias = 0;
+            const maxAlternancias = 20;
+            let velocidade = 60;
+
+            function rodarRoleta() {
+                const provisorio = Math.floor(Math.random() * TOTAL_NUMEROS) + 1;
+                displayNumero.textContent = provisorio;
+                alternancias++;
+
+                if (alternancias < maxAlternancias) {
+                    velocidade += 15; // Desaceleração gradual
+                    setTimeout(rodarRoleta, velocidade);
+                } else {
+                    baterMartelo();
+                }
+            }
+
+            function baterMartelo() {
+                displayNumero.className = 'numero-sorteado vencedor';
+                const numeroVencedor = Math.floor(Math.random() * TOTAL_NUMEROS) + 1;
+                displayNumero.textContent = numeroVencedor;
+
+                const elementoVencedor = document.getElementById(`n-${numeroVencedor}`);
+                if (elementoVencedor) {
+                    elementoVencedor.classList.add('vencedor-grid');
+                }
+                btnSortear.disabled = false;
+            }
+
+            rodarRoleta();
+        }
+
+        document.addEventListener('DOMContentLoaded', gerarGrade);
+        btnSortear.addEventListener('click', iniciarSorteio);
+    </script>
+</body>
+</html>
